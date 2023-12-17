@@ -6,7 +6,7 @@ from torchvision.transforms.functional import to_pil_image
 import time
 import cv2
 
-img = read_image("office.jpg")
+img = cv2.imread("office.jpg")
 new_width = 270
 new_height = 480
 img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_AREA)
