@@ -1,51 +1,18 @@
+import time
 import torch
-from torchvision import transforms
-from torchvision.models.detection import fasterrcnn_resnet50_fpn
-from PIL import Image, ImageDraw
+import numpy as np
+import cv2
 
-def load_model():
-    # Load the pre-trained Faster R-CNN model with a ResNet backbone
-    model = fasterrcnn_resnet50_fpn(pretrained=True)
-    model.eval()
-    return model
+img = cv2.imread("office.jpg")
 
-def detect_objects(model, image_path):
-    # Load and preprocess the image
-    img = Image.open(image_path).convert("RGB")
-    transform = transforms.Compose([transforms.ToTensor()])
-    img_tensor = transform(img).unsqueeze(0)
+print("original image shape",img.shape)
 
-    # Make the prediction
-    with torch.no_grad():
-        prediction = model(img_tensor)
-
-    return prediction
-
-def draw_boxes(image, prediction):
-    # Draw bounding boxes on the image
-    draw = ImageDraw.Draw(image)
-    boxes = prediction[0]['boxes']
-    for box in boxes:
-        draw.rectangle([(box[0], box[1]), (box[2], box[3])], outline="red", width=3)
-
-    return image
-
-if __name__ == "__main__":
-    # Load the pre-trained model
-    model = load_model()
-
-    # Provide the path to your sample image
-    image_path = "office.jpg"
-
-    # Run object detection
-    prediction = detect_objects(model, image_path)
-
-    # Draw bounding boxes on the image
-    original_image = Image.open(image_path)
-    image_with_boxes = draw_boxes(original_image.copy(), prediction)
-
-    # Display or save the result
-    image_with_boxes.show()
-    # Optionally, save the result to a file
-    image_with_boxes.save("path/to/your/output/result.jpg")
+new_width = 480
+new_height = 270
+downsample = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_AREA)
+print("downsample image shape",downsample.shape)
+# cv2.imshow("office",img)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+cv2.imwrite(f"office_downsample{new_width}_{new_height}.jpg",downsample)
 
