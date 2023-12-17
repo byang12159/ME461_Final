@@ -4,12 +4,11 @@ from torchvision.models.detection import fasterrcnn_resnet50_fpn_v2, FasterRCNN_
 from torchvision.utils import draw_bounding_boxes
 from torchvision.transforms.functional import to_pil_image
 import time
-import cv2
+img = read_image("office.jpg")
 
-img = cv2.imread("office.jpg")
-new_width = 270
-new_height = 480
-img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_AREA)
+# Resize the image (replace width and height with your desired dimensions)
+desired_size = (270,480)
+img = img.resize(desired_size)
 
 # Step 1: Initialize model with the best available weights
 weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
