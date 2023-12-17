@@ -9,8 +9,7 @@ img = read_image("office.jpg")
 # Step 1: Initialize model with the best available weights
 weights = FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT
 model = fasterrcnn_resnet50_fpn_v2(weights=weights, box_score_thresh=0.9)
-# model = fasterrcnn_mobilenet_v3_large_fpn(weights=FasterRCNN_MobileNet_V3_Large_FPN_Weights.DEFAULT)
-# weights = FasterRCNN_MobileNet_V3_Large_FPN_Weights.DEFAULT
+
 
 model.eval()
 

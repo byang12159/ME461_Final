@@ -2,7 +2,7 @@ import torch
 from torchvision import transforms
 from torchvision.models.detection import fasterrcnn_resnet50_fpn
 from PIL import Image, ImageDraw
-import time
+
 def load_model():
     # Load the pre-trained Faster R-CNN model with a ResNet backbone
     model = fasterrcnn_resnet50_fpn(pretrained=True)
@@ -38,11 +38,7 @@ if __name__ == "__main__":
     image_path = "office.jpg"
 
     # Run object detection
-    start_time = time.time()
     prediction = detect_objects(model, image_path)
-    end_time = time.time()
-    execution_time = end_time - start_time
-    print("execution_time",execution_time)
 
     # Draw bounding boxes on the image
     original_image = Image.open(image_path)
