@@ -1,70 +1,60 @@
 import time
-
 import torch
 import numpy as np
 from torchvision import models, transforms
-
 import cv2
 from PIL import Image
 
 torch.backends.quantized.engine = 'qnnpack'
 
 img = cv2.imread("office.jpg")
-
 print("image shape",img.shape)
 
 new_width = 270
 new_height = 480
-downsample = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_AREA)
-print("downsample image shape",downsample.shape)
-# cv2.imshow("office",img)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_AREA)
+print("downsample image shape",img.shape)
 
-
-# cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
-# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
-# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
-# cap.set(cv2.CAP_PROP_FPS, 36)
 
 preprocess = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
-net = models.quantization.mobilenet_v2(pretrained=True, quantize=True)
-# # jit model to take it from ~20fps to ~30fps
+net = models.quantization.mobilenet_v2( quantize=True)
+# jit model to take it from ~20fps to ~30fps
 net = torch.jit.script(net)
 
-# started = time.time()
-# last_logged = time.time()
-# frame_count = 0
 
-# with torch.no_grad():
-#     while True:
-#         # read frame
-#         ret, image = cap.read()
-#         if not ret:
-#             raise RuntimeError("failed to read frame")
+last_logged = time.time()
+frame_count = 0
 
-#         # convert opencv output from BGR to RGB
-#         image = image[:, :, [2, 1, 0]]
-#         permuted = image
+sumtime = 0 
 
-#         # preprocess
-#         input_tensor = preprocess(image)
+with torch.no_grad():
+    for i in range(20):
+        # read frame
+        image = img
 
-#         # create a mini-batch as expected by the model
-#         input_batch = input_tensor.unsqueeze(0)
+        # convert opencv output from BGR to RGB
+        image = image[:, :, [2, 1, 0]]
+        permuted = image
 
-#         # run model
-#         output = net(input_batch)
-#         # do something with output ...
+        # preprocess
+        input_tensor = preprocess(image)
 
-#         # log model performance
-#         frame_count += 1
-#         now = time.time()
-#         if now - last_logged > 1:
-#             print(f"{frame_count / (now-last_logged)} fps")
-#             last_logged = now
-#             frame_count = 0
+        # create a mini-batch as expected by the model
+        input_batch = input_tensor.unsqueeze(0)
+
+        started = time.time()
+        # run model
+        output = net(input_batch)
+        now = time.time()
+        # do something with output ...
+        print("time",now-started)
+        sumtime+= now-started
+
+print("average time",sumtime/20)
+
+
+       
