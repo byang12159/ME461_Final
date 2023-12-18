@@ -32,7 +32,7 @@ frame_count = 0
 sumtime = 0 
 
 with torch.no_grad():
-    for i in range(20):
+    for i in range(60):
         # read frame
         image = img
 
@@ -54,7 +54,7 @@ with torch.no_grad():
         print("time",now-started)
         sumtime+= now-started
 
-print("average time",sumtime/20)
+print("average time",sumtime/60)
 
 
        
